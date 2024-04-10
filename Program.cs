@@ -131,9 +131,9 @@ void render()
     int height = Raylib.GetScreenHeight();
     Raylib.ClearBackground(Color.Gray);
 
-    Raylib.DrawRectangle(0, height / 2, width, height / 2, Color.Blue);
+    Raylib.DrawRectangle(0, height / 2, width, height / 2, new Color(0x00, 0xFA, 0xFA, 0x24));
     foreach (var particle in particles)
     {
-        Raylib.DrawCircle((int)particle.position.x, (int)particle.position.y, particle.radius, Color.Red);
+        Raylib.DrawCircle((int)particle.position.x, (int)particle.position.y, particle.radius, new Color(0xFF, 0xAF, 0xAF, 0xF1));
     }
 }
