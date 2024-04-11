@@ -78,11 +78,6 @@ void update()
 
     Raylib.DrawText(((int)(1.0f / Raylib.GetFrameTime())).ToString(), 12, 12, 20, Color.Black);
 
-    if (deltaTime > 0.0166f)
-    {
-        deltaTime = 0.0166f;
-    }
-
     timeLast = (float)Raylib.GetTime();
 
     foreach (var particle in particles)
