@@ -2,18 +2,17 @@
 
 //////////////////////////////////////////
 
-Raylib.InitWindow(1920, 1080, "window");
-Raylib.ToggleFullscreen();
+Raylib.InitWindow(800, 600, "window");
 
 List<Particle> particles = new();
 Vec2d pushForce = new();
-float timeLast = 0;
+float timeLast = (float)Raylib.GetTime();
+string dtString;
 
 while (!Raylib.WindowShouldClose())
 {
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.White);
-
 
     input();
     update();
@@ -34,9 +33,9 @@ void input()
     if (Raylib.IsKeyDown(KeyboardKey.Up)) pushForce.y -= 50 * Constants.ppm;
     if (Raylib.IsKeyDown(KeyboardKey.Down)) pushForce.y += 50 * Constants.ppm;
     if (Raylib.IsKeyDown(KeyboardKey.Left)) pushForce.x -= 50 * Constants.ppm;
-    if (Raylib.IsKeyDown(KeyboardKey.Right)) pushForce.x = 50 * Constants.ppm;
+    if (Raylib.IsKeyDown(KeyboardKey.Right)) pushForce.x += 50 * Constants.ppm;
 
-    if (Raylib.IsMouseButtonPressed(MouseButton.Left))
+    if (Raylib.IsMouseButtonPressed(MouseButton.Left) || Raylib.IsMouseButtonPressed(MouseButton.Right))
     {
         int mouseX = Raylib.GetMouseX();
         int mouseY = Raylib.GetMouseY();
@@ -62,6 +61,19 @@ void input()
         }
 
         particles.Add(new(mouseX, mouseY, mass, radius));
+
+        if (Raylib.IsMouseButtonPressed(MouseButton.Right))
+        {
+            particles.Add(new(mouseX + 5, mouseY + 12, mass, radius));
+            particles.Add(new(mouseX + 7, mouseY + 3, mass, radius));
+            particles.Add(new(mouseX - 2, mouseY + 5, mass, radius));
+            particles.Add(new(mouseX - 5, mouseY + 6, mass, radius));
+            particles.Add(new(mouseX + 9, mouseY + 11, mass, radius));
+            particles.Add(new(mouseX + 12, mouseY + 3, mass, radius));
+            particles.Add(new(mouseX - 3, mouseY + 10, mass, radius));
+            particles.Add(new(mouseX - 12, mouseY + 6, mass, radius));
+            particles.Add(new(mouseX - 9, mouseY + 6, mass, radius));
+        }
     }
 }
 
@@ -75,8 +87,7 @@ void update()
     }
 
     float deltaTime = (float)Raylib.GetTime() - timeLast;
-
-    Raylib.DrawText(((int)(1.0f / Raylib.GetFrameTime())).ToString(), 12, 12, 20, Color.Black);
+    dtString = ((int)(1.0f / deltaTime)).ToString();
 
     timeLast = (float)Raylib.GetTime();
 
@@ -130,5 +141,9 @@ void render()
     foreach (var particle in particles)
     {
         Raylib.DrawCircle((int)particle.position.x, (int)particle.position.y, particle.radius, new Color(0xFF, 0xAF, 0xAF, 0xF1));
+        Raylib.DrawCircleLines((int)particle.position.x, (int)particle.position.y, particle.radius + 1, new Color(0x00, 0x00, 0x00, 0xF1));
     }
+
+    Raylib.DrawText(dtString, 12, 12, 20, Color.Black);
+    Raylib.DrawText(particles.Count.ToString(), 12, 36, 20, Color.Black);
 }
