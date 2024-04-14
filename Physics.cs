@@ -1,3 +1,5 @@
+using Raylib_cs;
+
 static class Constants
 {
     public static int fps = 60;
@@ -34,6 +36,9 @@ class Particle
     public Vec2d velocity { get; set; } = new();
     public Vec2d acceleration { get; set; } = new();
     public Vec2d totalForce { get; set; } = new();
+    public Texture2D texture { get; set; } = new();
+    public bool textureSet { get; set; } = false;
+    static public Dictionary<int, Texture2D> textureMap { get; set; } = new();
 
     public float mass { get; set; } = 1.0f;
     public float massInverse { get; set; } = 1.0f;

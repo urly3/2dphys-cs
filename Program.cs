@@ -131,7 +131,7 @@ void update()
     }
 }
 
-void render()
+unsafe void render()
 {
     int width = Raylib.GetScreenWidth();
     int height = Raylib.GetScreenHeight();
@@ -140,10 +140,28 @@ void render()
     Raylib.DrawRectangle(0, height / 2, width, height / 2, new Color(0x00, 0xFA, 0xFA, 0x24));
     foreach (var particle in particles)
     {
-        Raylib.DrawCircle((int)particle.position.x, (int)particle.position.y, particle.radius, new Color(0xFF, 0xAF, 0xAF, 0xF1));
-        Raylib.DrawCircleLines((int)particle.position.x, (int)particle.position.y, particle.radius + 1, new Color(0x00, 0x00, 0x00, 0xF1));
+        if (!particle.textureSet)
+        {
+            if (!Particle.textureMap.ContainsKey(particle.radius))
+            {
+                var image = Raylib.GenImageColor((particle.radius * 2) + 5, (particle.radius * 2) + 5, Color.Blank);
+                Raylib.ImageDrawCircle(&image, image.Width / 2, image.Height / 2, particle.radius, new(0xFF, 0xAF, 0xAF, 0xF1));
+                Raylib.ImageDrawCircleLines(&image, image.Width / 2, image.Height / 2, particle.radius, new(0, 0, 0, 0xFF));
+                particle.texture = Raylib.LoadTextureFromImage(image);
+                Raylib.UnloadImage(image);
+                Particle.textureMap.Add(particle.radius, particle.texture);
+            }
+            else
+            {
+                particle.texture = Particle.textureMap[particle.radius];
+            }
+
+            particle.textureSet = true;
+        }
+
+        Raylib.DrawTexture(particle.texture, (int)particle.position.x - particle.radius - 1, (int)particle.position.y - particle.radius - 1, Color.RayWhite);
     }
 
-    Raylib.DrawText(dtString, 12, 12, 20, Color.Black);
-    Raylib.DrawText(particles.Count.ToString(), 12, 36, 20, Color.Black);
+    Raylib.DrawText(dtString, 12, 12, 20, Color.RayWhite);
+    Raylib.DrawText(particles.Count.ToString(), 12, 36, 20, Color.RayWhite);
 }
